@@ -74,19 +74,6 @@ resource "aws_security_group" "example" {
    }
 }
 
-resource "aws_s3_bucket" "test" {
-  bucket = "test-testint-tesr"
-  #acl    = "public-read" 
-  
-  tags = {
-    Name        = "Test"
-    Environment = var.environment
-    Scope = "PCI"
-    product_v2 = "dev"
-    terraform_managed = "true"
-    test  = "true"
-  }
-}
 
 resource "aws_security_group" "examplesg" {
   name        = "example-security-group"
