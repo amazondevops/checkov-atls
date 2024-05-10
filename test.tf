@@ -1,6 +1,6 @@
 resource "aws_s3_bucket" "my_bucket-test" {
   bucket = var.bucket_name
-  #acl    = "public-read" 
+  acl    = "public-read" 
   
   tags = {
     Name        = var.bucket_name
