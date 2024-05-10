@@ -1,0 +1,12 @@
+repos:
+  - repo: local
+    hooks:
+      - id: checkov-local
+        name: Checkov Local
+        entry: bash -c 'for file in $(git diff --name-only --cached); do if [[ $file =~ \.(tf(vars)?|hcl)$ ]]; then checkov -f "$file" --compact ; fi; done'
+        language: system
+        types: [terraform]
+        stages: [commit]
+        pass_filenames: false
+        verbose: true
+        exclude: \.terraform\/.*$
