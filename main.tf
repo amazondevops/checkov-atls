@@ -1,32 +1,31 @@
 provider "aws" {
   region = var.aws_region
 }
-
 resource "aws_s3_bucket" "my_bucket" {
   bucket = var.bucket_name
   #acl    = "public-read" 
-  
+
   tags = {
-    Name        = var.bucket_name
-    Environment = var.environment
-    Scope = "PCI"
-    product_v2 = "dev"
+    Name              = var.bucket_name
+    Environment       = var.environment
+    Scope             = "PCI"
+    product_v2        = "dev"
     terraform_managed = "true"
-    test = "true"
+    test              = "true"
   }
 }
 
 resource "aws_s3_bucket" "test" {
   bucket = "test-testint-tesr"
   #acl    = "public-read" 
-  
+
   tags = {
-    Name        = "Test"
-    Environment = var.environment
-    Scope = "PCI"
-    product_v2 = "dev"
+    Name              = "Test"
+    Environment       = var.environment
+    Scope             = "PCI"
+    product_v2        = "dev"
     terraform_managed = "true"
-    test  = "true"
+    test              = "true"
   }
 }
 
@@ -45,9 +44,9 @@ resource "aws_security_group" "example" {
   // Inbound rule for HTTP (port 80)
 
   ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
+    from_port = 80
+    to_port   = 80
+    protocol  = "tcp"
     #cidr_blocks = ["123.34.54.24/32"]
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -68,9 +67,9 @@ resource "aws_security_group" "example" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-     Name = "Test"
-      product_v2 = "dev"
+    Name              = "Test"
+    product_v2        = "dev"
     terraform_managed = "true"
-   }
+  }
 }
 

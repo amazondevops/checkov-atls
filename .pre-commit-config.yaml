@@ -1,12 +1,58 @@
+# repos:
+#   - repo: local
+#     hooks:
+#       - id: checkov-local
+#         name: Checkov Local
+#         entry: bash -c 'for file in $(git diff --name-only --cached); do if [[ $file =~ \.(tf(vars)?|hcl)$ ]]; then checkov -f "$file" --compact ; fi; done'
+#         language: system
+#         types: [terraform]
+#         stages: [commit]
+#         pass_filenames: false
+#         verbose: true
+#         exclude: \.terraform\/.*$
+
 repos:
+  - repo: https://github.com/gruntwork-io/pre-commit
+    rev: v0.1.20
+    hooks:
+      - id: terraform-fmt
+      - id: terraform-validate
+
   - repo: local
     hooks:
       - id: checkov-local
         name: Checkov Local
-        entry: bash -c 'for file in $(git diff --name-only --cached); do if [[ $file =~ \.(tf(vars)?|hcl)$ ]]; then checkov -f "$file" --compact ; fi; done'
+        entry: |
+          bash -c '
+          #!/bin/bash
+          # Check for pip or pip3
+          if command -v pip &> /dev/null; then
+              PIP=pip
+          elif command -v pip3 &> /dev/null; then
+              PIP=pip3
+          else
+              echo "ERROR: Pip or pip3 not found. Please install pip or pip3 to continue."
+              exit 1
+          fi
+          # Check if Checkov is installed
+          if ! command -v checkov &> /dev/null; then
+              # Install Checkov
+              echo "Checkov not found, installing..."
+              $PIP install checkov
+              if [ $? -ne 0 ]; then
+                  echo "ERROR: Failed to install Checkov via $PIP."
+                  exit 1
+              fi
+          fi
+          # Run Checkov on Terraform files
+          for file in $(git diff --name-only --cached | grep -E "\.(tf|tfvars|hcl)$"); do
+              checkov -f "$file" --external-checks-git git@bitbucket.org:junglee_games/jg-terraform-checkov-policies.git --check "JG_AWS_*_*" --compact
+          done
+          '
         language: system
         types: [terraform]
         stages: [commit]
         pass_filenames: false
         verbose: true
         exclude: \.terraform\/.*$
+
